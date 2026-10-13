@@ -37,6 +37,8 @@ def main():
     parser.add_argument("-e", "--end", type=int, default=1024, help="End port")
     parser.add_argument("-t", "--timeout", type=float, default=1.0, help="Timeout in seconds")
     parser.add_argument("-w", "--workers", type=int, default=100, help="Number of threads")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="Print closed/timeout/error ports too")
     args = parser.parse_args()
 
     if not (1 <= args.start <= args.end <= 65535):
@@ -60,8 +62,8 @@ def main():
     counts = {"OPEN": 0, "CLOSED": 0, "TIMEOUT": 0, "ERROR": 0}
     for port, status in results:
         counts[status] += 1
-        if status == "OPEN":
-            print(f"Port {port} is OPEN")
+        if status == "OPEN" or args.verbose:
+            print(f"Port {port} is {status}")
 
     summary = (f"Open: {counts['OPEN']} | Closed: {counts['CLOSED']} | "
                f"Timeout: {counts['TIMEOUT']} | Error: {counts['ERROR']}")
